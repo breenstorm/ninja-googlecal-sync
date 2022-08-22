@@ -12,6 +12,6 @@
   "require": {
     "johngrogg/ics-parser": "*",
     "invoiceninja/sdk-php": "*",
-    "vlucas/phpdotenv": "*"
+    "vlucas/phpdotenv": "^4"
   }
 }

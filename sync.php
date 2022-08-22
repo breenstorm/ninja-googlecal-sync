@@ -11,7 +11,8 @@ use Dotenv\Dotenv;
 $days = 30;
 $refprefix = "Google Calendar item ";
 
-Dotenv::createArrayBacked(__DIR__)->load();
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
 $lookback = new DateInterval("P".$days."D");
 $startdate = new DateTime();
