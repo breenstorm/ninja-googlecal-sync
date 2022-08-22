@@ -54,9 +54,9 @@ foreach ($events as $event) {
     $dtend = $ical->iCalDateToDateTime($event->dtend);
     $guid = $event->uid;
     echo $dtstart->format("Y\-m\-d H:i:s")." - ".$dtend->format("Y\-m\-d H:i:s")." ".$event->summary." GUID:".$guid."\n";
+    $found = false;
     foreach ($tasks["data"] as $task) {
-        $found = false;
-        echo "Comparing ".$task["custom_value1"]." to ".$refprefix.$guid."";
+//        echo "Comparing ".$task["custom_value1"]." to ".$refprefix.$guid."";
         if ($task["custom_value1"] == $refprefix.$guid) {
             echo "MATCH!";
             $found = true;
