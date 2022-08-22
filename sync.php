@@ -94,7 +94,6 @@ if (sizeof($events)>0) {
                 $client_id = $bestmatch["id"];
                 $taskdata = [];
                 $taskdata["client_id"] = $client_id;
-                $taskdata["status_id"] = "WjnegYbwZ1";
                 $taskdata["custom_value1"] = $refprefix.$guid;
                 if (sizeof($description)>1) {
                     array_splice($description,0,1);
