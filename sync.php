@@ -41,12 +41,18 @@ try {
 }
 echo "Looking back ".$_ENV['DAYS']." days\n";
 //get calendar items
-echo "Getting events...\n";
+echo "Getting events... ";
 $events = $ical->events();
-echo "Getting tasks...\n";
+echo sizeof($events);
+echo "\n";
+echo "Getting tasks...";
 $tasks = $ninja->tasks->all(["per_page"=>9999999]);
-echo "Getting clients...\n";
+echo sizeof($tasks["data"]);
+echo "\n";
+echo "Getting clients...";
 $clients = $ninja->clients->all(["per_page"=>9999999]);
+echo sizeof($clients["data"]);
+echo "\n";
 echo "Matching events and tasks...\n";
 foreach ($events as $event) {
     $dtstart = $ical->iCalDateToDateTime($event->dtstart);
