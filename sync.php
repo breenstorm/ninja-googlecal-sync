@@ -58,10 +58,10 @@ foreach ($events as $event) {
     foreach ($tasks["data"] as $task) {
 //        echo "Comparing ".$task["custom_value1"]." to ".$refprefix.$guid."";
         if ($task["custom_value1"] == $refprefix.$guid) {
-            echo "MATCH!";
+//            echo "MATCH!";
             $found = true;
         }
-        echo "\n";
+//        echo "\n";
     }
     if (!$found) {
         echo "No matching task found. Creating task for event ".$event->summary." at ".$dtstart->format("Y\-m\-d H:i:s")."\n";
