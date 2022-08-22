@@ -1,0 +1,17 @@
+{
+  "name": "breenstorm/ninja-googlecal-sync",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Basz",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+    "johngrogg/ics-parser": "*",
+    "invoiceninja/sdk-php": "*",
+    "vlucas/phpdotenv": "*"
+  }
+}
