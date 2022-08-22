@@ -7,12 +7,11 @@ use ICal\ICal;
 use InvoiceNinja\Sdk\InvoiceNinja;
 use Dotenv\Dotenv;
 
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
 $days = $_ENV['DAYS'];
 $refprefix = $_ENV['REFPREFIX'];
-
-$dotenv = Dotenv::createImmutable(__DIR__);
-$dotenv->load();
 
 $lookback = new DateInterval("P".$days."D");
 $startdate = new DateTime();
