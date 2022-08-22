@@ -10,7 +10,7 @@ use Dotenv\Dotenv;
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
-$days = $_ENV['DAYS'];
+$days = intval($_ENV['DAYS']);
 $refprefix = $_ENV['REFPREFIX'];
 
 $lookback = new DateInterval("P".$days."D");
@@ -39,7 +39,7 @@ try {
 } catch (\Exception $e) {
     die($e);
 }
-echo "Looking back ".$_ENV['DAYS']."\n";
+echo "Looking back ".$_ENV['DAYS']." days\n";
 //get calendar items
 echo "Getting events...\n";
 $events = $ical->events();
