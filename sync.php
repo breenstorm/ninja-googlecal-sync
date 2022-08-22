@@ -5,12 +5,13 @@ require_once 'vendor/autoload.php';
 
 use ICal\ICal;
 use InvoiceNinja\Sdk\InvoiceNinja;
+use Dotenv\Dotenv;
 
 
 $days = 30;
 $refprefix = "Google Calendar item ";
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->safeLoad();
 
 $lookback = new DateInterval("P".$days."D");
