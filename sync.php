@@ -12,6 +12,10 @@ $dotenv->load();
 
 $days = intval($_ENV['DAYS']);
 $refprefix = $_ENV['REFPREFIX'];
+$dryrun = false;
+if (isset($_ENV['dryrun'])) {
+    $dryrun = ($_ENV['DRYRUN']==1);
+}
 
 $lookback = new DateInterval("P".$days."D");
 $startdate = new DateTime();
@@ -100,7 +104,9 @@ if (sizeof($events)>0) {
                 }
                 $taskdata["description"] = trim(implode(",",$description));
                 $taskdata["time_log"] = json_encode([[$dtstart->getTimestamp(),$dtend->getTimestamp()]]);
-                $res = $ninja->tasks->create($taskdata);
+                if (!$dryrun) {
+                    $res = $ninja->tasks->create($taskdata);
+                }
             } else {
                 echo "No client found for event. Skipping.\n";
             }
