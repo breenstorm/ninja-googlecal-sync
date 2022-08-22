@@ -103,6 +103,7 @@ if (sizeof($events)>0) {
                     array_splice($description,0,1);
                 }
                 $taskdata["description"] = trim(implode(",",$description));
+                $taskdata["status_id"] = "wMvbmOeYAl";
                 $taskdata["time_log"] = json_encode([[$dtstart->getTimestamp(),$dtend->getTimestamp()]]);
                 if (!$dryrun) {
                     $res = $ninja->tasks->create($taskdata);
