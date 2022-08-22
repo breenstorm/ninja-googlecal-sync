@@ -10,11 +10,12 @@ use Dotenv\Dotenv;
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
+echo $_ENV['DRYRUN']."\n";
 $days = intval($_ENV['DAYS']);
 $refprefix = $_ENV['REFPREFIX'];
 $dryrun = false;
-if (isset($_ENV['dryrun'])) {
-    $dryrun = ($_ENV['DRYRUN']==1);
+if (isset($_ENV['DRYRUN'])) {
+    $dryrun = ($_ENV['DRYRUN']=="1");
 }
 
 $lookback = new DateInterval("P".$days."D");
