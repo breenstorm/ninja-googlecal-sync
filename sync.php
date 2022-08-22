@@ -8,8 +8,8 @@ use InvoiceNinja\Sdk\InvoiceNinja;
 use Dotenv\Dotenv;
 
 
-$days = 30;
-$refprefix = "Google Calendar item ";
+$days = $_ENV['DAYS'];
+$refprefix = $_ENV['REFPREFIX'];
 
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
@@ -40,7 +40,7 @@ try {
 } catch (\Exception $e) {
     die($e);
 }
-
+echo "Looking back ".$_ENV['DAYS']."\n";
 //get calendar items
 echo "Getting events...\n";
 $events = $ical->events();
