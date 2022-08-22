@@ -10,7 +10,6 @@ use Dotenv\Dotenv;
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
-echo $_ENV['DRYRUN']."\n";
 $days = intval($_ENV['DAYS']);
 $refprefix = $_ENV['REFPREFIX'];
 $dryrun = false;
