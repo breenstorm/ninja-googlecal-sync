@@ -80,16 +80,18 @@ if (sizeof($events)>0) {
             $bestmatch = null;
             $description = explode(",",$event->summary);
             foreach ($clients["data"] as $client) {
-                $thisscore = 0;
-                foreach (array_reverse($description) as $value) {
-                    $thissubscore = 0;
-                    similar_text($value,$client["name"],$thissubscore);
-                    $thisscore = (0.1*$thisscore) + $thissubscore;
-                }
-                if ($thisscore>$bestscore) {
+                if ($client["deleted_at"]!=null) {
+                    $thisscore = 0;
+                    foreach (array_reverse($description) as $value) {
+                        $thissubscore = 0;
+                        similar_text($value,$client["name"],$thissubscore);
+                        $thisscore = (0.1*$thisscore) + $thissubscore;
+                    }
+                    if ($thisscore>$bestscore) {
 //                    echo "Client ".$client["name"]." matches better at ".$thisscore."%\n";
-                    $bestscore = $thisscore;
-                    $bestmatch = $client;
+                        $bestscore = $thisscore;
+                        $bestmatch = $client;
+                    }
                 }
             }
             if ($bestmatch!==null) {
