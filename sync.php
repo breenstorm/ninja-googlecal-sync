@@ -80,9 +80,7 @@ if (sizeof($events)>0) {
             $bestmatch = null;
             $description = explode(",",$event->summary);
             foreach ($clients["data"] as $client) {
-                var_dump($client);
-                exit;
-                if ($client["deleted_at"]!=null) {
+                if ($client["archived_at"]!=null) {
                     $thisscore = 0;
                     foreach (array_reverse($description) as $value) {
                         $thissubscore = 0;
@@ -90,7 +88,7 @@ if (sizeof($events)>0) {
                         $thisscore = (0.1*$thisscore) + $thissubscore;
                     }
                     if ($thisscore>$bestscore) {
-//                    echo "Client ".$client["name"]." matches better at ".$thisscore."%\n";
+                    echo "Client ".$client["name"]." matches better at ".$thisscore."%\n";
                         $bestscore = $thisscore;
                         $bestmatch = $client;
                     }
