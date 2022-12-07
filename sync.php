@@ -80,6 +80,8 @@ if (sizeof($events)>0) {
             $bestmatch = null;
             $description = explode(",",$event->summary);
             foreach ($clients["data"] as $client) {
+                var_dump($client);
+                exit;
                 if ($client["deleted_at"]!=null) {
                     $thisscore = 0;
                     foreach (array_reverse($description) as $value) {
