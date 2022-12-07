@@ -80,7 +80,7 @@ if (sizeof($events)>0) {
             $bestmatch = null;
             $description = explode(",",$event->summary);
             foreach ($clients["data"] as $client) {
-                if ($client["archived_at"]!=null) {
+                if ($client["archived_at"]==null) {
                     $thisscore = 0;
                     foreach (array_reverse($description) as $value) {
                         $thissubscore = 0;
