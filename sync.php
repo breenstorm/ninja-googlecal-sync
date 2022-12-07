@@ -88,7 +88,7 @@ if (sizeof($events)>0) {
                         $thisscore = (0.1*$thisscore) + $thissubscore;
                     }
                     if ($thisscore>$bestscore) {
-                    echo "Client ".$client["name"]." matches better at ".$thisscore."%\n";
+//                    echo "Client ".$client["name"]." matches better at ".$thisscore."%\n";
                         $bestscore = $thisscore;
                         $bestmatch = $client;
                     }
