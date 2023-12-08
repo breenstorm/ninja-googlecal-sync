@@ -74,7 +74,7 @@ if (sizeof($events)>0) {
     while ($more && ($page < 10)) {
         echo "page ".$page."... ";
         $subclients = $ninja->clients->all(["per_page"=>5000,"page"=>$page]);
-        $tasks["data"] = array_merge($clients["data"],$subclients["data"]);
+        $clients["data"] = array_merge($clients["data"],$subclients["data"]);
         if ($subclients["meta"]["pagination"]["current_page"]==$subclients["meta"]["pagination"]["total_pages"]) {
             $more = false;
         }
