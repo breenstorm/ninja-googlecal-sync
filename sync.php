@@ -55,9 +55,9 @@ if (sizeof($events)>0) {
     $page = 1;
     $more = true;
     $tasks = ["data"=>[]];
-    while ($more && ($page < 100)) {
+    while ($more && ($page < 10)) {
         echo "page ".$page."... ";
-        $subtasks = $ninja->tasks->all(["per_page"=>1000,"page"=>$page]);
+        $subtasks = $ninja->tasks->all(["per_page"=>5000,"page"=>$page]);
         $tasks["data"] = array_merge($tasks["data"],$subtasks["data"]);
         if ($subtasks["meta"]["pagination"]["current_page"]==$subtasks["meta"]["pagination"]["total_pages"]) {
             $more = false;
@@ -68,7 +68,18 @@ if (sizeof($events)>0) {
     echo "\n";
     file_put_contents("tasks.json",json_encode($tasks,JSON_PRETTY_PRINT));
     echo "Getting clients... ";
-    $clients = $ninja->clients->all(["per_page"=>9999999]);
+    $page = 1;
+    $more = true;
+    $clients = ["data"=>[]];
+    while ($more && ($page < 10)) {
+        echo "page ".$page."... ";
+        $subclients = $ninja->clients->all(["per_page"=>5000,"page"=>$page]);
+        $tasks["data"] = array_merge($clients["data"],$subclients["data"]);
+        if ($subclients["meta"]["pagination"]["current_page"]==$subclients["meta"]["pagination"]["total_pages"]) {
+            $more = false;
+        }
+        $page++;
+    }
     echo sizeof($clients["data"]);
     echo "\n";
     echo "Matching events and tasks...\n";
