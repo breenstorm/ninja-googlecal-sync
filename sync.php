@@ -49,12 +49,13 @@ echo "Getting events... ";
 $events = $ical->events();
 echo sizeof($events);
 echo "\n";
-var_dump($events);
+file_put_contents("events.json",json_encode($events));
 if (sizeof($events)>0) {
     echo "Getting tasks... ";
     $tasks = $ninja->tasks->all(["per_page"=>9999999]);
     echo sizeof($tasks["data"]);
     echo "\n";
+    file_put_contents("tasks.json",json_encode($tasks));
     echo "Getting clients... ";
     $clients = $ninja->clients->all(["per_page"=>9999999]);
     echo sizeof($clients["data"]);
