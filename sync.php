@@ -55,9 +55,9 @@ if (sizeof($events)>0) {
     $page = 1;
     $more = true;
     $tasks = ["data"=>[]];
-    while ($more && ($page < 10)) {
+    while ($more && ($page < 100)) {
         echo "page ".$page."... ";
-        $subtasks = $ninja->tasks->all(["per_page"=>9999999,"page"=>$page]);
+        $subtasks = $ninja->tasks->all(["per_page"=>1000,"page"=>$page]);
         $tasks["data"] = array_merge($tasks["data"],$subtasks["data"]);
         if ($subtasks["meta"]["pagination"]["current_page"]==$subtasks["meta"]["pagination"]["total_pages"]) {
             $more = false;
