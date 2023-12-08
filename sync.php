@@ -52,7 +52,18 @@ echo "\n";
 file_put_contents("events.json",json_encode($events,JSON_PRETTY_PRINT));
 if (sizeof($events)>0) {
     echo "Getting tasks... ";
-    $tasks = $ninja->tasks->all(["per_page"=>9999999,"page"=>2]);
+    $page = 1;
+    $more = true;
+    $tasks = ["data"=>[]];
+    while ($more && ($page < 10)) {
+        echo "page ".$page."... ";
+        $subtasks = $ninja->tasks->all(["per_page"=>9999999,"page"=>$page]);
+        $tasks["data"] = array_merge($tasks["data"],$subtasks["data"]);
+        if ($subtasks["meta"]["pagination"]["current_page"]==$subtasks["meta"]["pagination"]["current_page"]) {
+            $more = false;
+        }
+        $page++;
+    }
     echo sizeof($tasks["data"]);
     echo "\n";
     file_put_contents("tasks.json",json_encode($tasks,JSON_PRETTY_PRINT));
