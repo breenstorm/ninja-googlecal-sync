@@ -52,7 +52,7 @@ echo "\n";
 file_put_contents("events.json",json_encode($events,JSON_PRETTY_PRINT));
 if (sizeof($events)>0) {
     echo "Getting tasks... ";
-    $tasks = $ninja->tasks->all(["per_page"=>9999999]);
+    $tasks = $ninja->tasks->all(["per_page"=>9999999,"page"=>2]);
     echo sizeof($tasks["data"]);
     echo "\n";
     file_put_contents("tasks.json",json_encode($tasks,JSON_PRETTY_PRINT));
