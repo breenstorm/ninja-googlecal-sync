@@ -49,6 +49,7 @@ echo "Getting events... ";
 $events = $ical->events();
 echo sizeof($events);
 echo "\n";
+var_dump($events);
 if (sizeof($events)>0) {
     echo "Getting tasks... ";
     $tasks = $ninja->tasks->all(["per_page"=>9999999]);
