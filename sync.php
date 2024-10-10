@@ -12,9 +12,11 @@ $dotenv->load();
 
 $days = intval($_ENV['DAYS']);
 $refprefix = $_ENV['REFPREFIX'];
-$dryrun = false;
-if (isset($_ENV['DRYRUN'])) {
-    $dryrun = ($_ENV['DRYRUN']=="1");
+$dryrun = ($_ENV['DRYRUN']=="1");
+
+$customer_separator = ",";
+if (isset($_ENV['CUSTOMER_SEPARATOR'])) {
+    $customer_separator = $_ENV['CUSTOMER_SEPARATOR'];
 }
 
 $lookback = new DateInterval("P".$days."D");
@@ -32,7 +34,7 @@ try {
         'httpUserAgent'               => null,  // Default value
         'skipRecurrence'              => false, // Default value
     ));
-    $ical->initUrl($_ENV['GCAL_URL'], $username = null, $password = null, $userAgent = null);
+    $ical->initUrl($_ENV['ICAL_URL'], $username = null, $password = null, $userAgent = null);
 } catch (\Exception $e) {
     die($e);
 }
@@ -45,13 +47,13 @@ try {
 }
 echo "Looking back ".$_ENV['DAYS']." days\n";
 //get calendar items
-echo "Getting events... ";
+echo "Getting events from ical... ";
 $events = $ical->events();
 echo sizeof($events);
 echo "\n";
 file_put_contents("events.json",json_encode($events,JSON_PRETTY_PRINT));
 if (sizeof($events)>0) {
-    echo "Getting tasks... ";
+    echo "Getting tasks from invoiceninja... ";
     $page = 1;
     $more = true;
     $tasks = ["data"=>[]];
@@ -67,7 +69,7 @@ if (sizeof($events)>0) {
     echo sizeof($tasks["data"]);
     echo "\n";
     file_put_contents("tasks.json",json_encode($tasks,JSON_PRETTY_PRINT));
-    echo "Getting clients... ";
+    echo "Getting clients from invoiceninja... ";
     $page = 1;
     $more = true;
     $clients = ["data"=>[]];
@@ -90,36 +92,32 @@ if (sizeof($events)>0) {
         echo $dtstart->format("Y\-m\-d H:i:s")." - ".$dtend->format("Y\-m\-d H:i:s")." ".$event->summary." GUID:".$guid."\n";
         $found = false;
         foreach ($tasks["data"] as $task) {
-//        echo "Comparing ".$task["custom_value1"]." to ".$refprefix.$guid."";
             if ($task["custom_value1"] == $refprefix.$guid) {
-//            echo "MATCH!";
                 $found = true;
             }
-//        echo "\n";
         }
         if (!$found) {
             echo "No matching task found. Creating task for event ".$event->summary." at ".$dtstart->format("Y\-m\-d H:i:s")."\n";
             //find matching client
             $bestscore = 0;
             $bestmatch = null;
-            $description = explode(",",$event->summary);
+            $description = explode($customer_separator,$event->summary);
             foreach ($clients["data"] as $client) {
                 if ($client["archived_at"]==null) {
                     $thisscore = 0;
+                    //try to find customer's name from pieces seperated by the separator string going back to front (front matches result in better scores)
                     foreach (array_reverse($description) as $value) {
                         $thissubscore = 0;
                         similar_text($value,$client["name"],$thissubscore);
                         $thisscore = (0.1*$thisscore) + $thissubscore;
                     }
                     if ($thisscore>$bestscore) {
-//                    echo "Client ".$client["name"]." matches better at ".$thisscore."%\n";
                         $bestscore = $thisscore;
                         $bestmatch = $client;
                     }
                 }
             }
             if ($bestmatch!==null) {
-//            echo "Best match is ".$bestmatch["name"]." ".$bestmatch["id"]."\n";
                 //add task for client
                 $client_id = $bestmatch["id"];
                 $taskdata = [];
