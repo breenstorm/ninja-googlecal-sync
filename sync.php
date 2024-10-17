@@ -51,7 +51,7 @@ echo "Getting events from ical... ";
 $events = $ical->events();
 echo sizeof($events);
 echo "\n";
-file_put_contents("events.json",json_encode($events,JSON_PRETTY_PRINT));
+//file_put_contents("events.json",json_encode($events,JSON_PRETTY_PRINT));
 if (sizeof($events)>0) {
     echo "Getting tasks from invoiceninja... ";
     $page = 1;
@@ -68,7 +68,7 @@ if (sizeof($events)>0) {
     }
     echo sizeof($tasks["data"]);
     echo "\n";
-    file_put_contents("tasks.json",json_encode($tasks,JSON_PRETTY_PRINT));
+//    file_put_contents("tasks.json",json_encode($tasks,JSON_PRETTY_PRINT));
 
     //Get clients from invoiceninja
     echo "Getting clients from invoiceninja... ";
