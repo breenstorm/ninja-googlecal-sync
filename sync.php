@@ -112,11 +112,11 @@ if (sizeof($events)>0) {
         $guid = $event->uid;
         echo $dtstart->format("Y\-m\-d H:i:s")." - ".$dtend->format("Y\-m\-d H:i:s")." ".$event->summary." GUID:".$guid."\n";
         $found = false;
-//        foreach ($tasks["data"] as $task) {
-//            if ($task["custom_value1"] == $refprefix.$guid) {
-//                $found = true;
-//            }
-//        }
+        foreach ($tasks["data"] as $task) {
+            if ($task["custom_value1"] == $refprefix.$guid) {
+                $found = true;
+            }
+        }
         if (!$found) {
             echo "No matching task found. Creating task for event ".$event->summary." at ".$dtstart->format("Y\-m\-d H:i:s")."\n";
             //find matching client
