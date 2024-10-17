@@ -134,6 +134,7 @@ if (sizeof($events)>0) {
                     }
                 }
             }
+            //find matching project
             $project_bestscore = 0;
             $project_bestmatch = null;
             if (isset($desc[1])) {
@@ -166,7 +167,7 @@ if (sizeof($events)>0) {
 
                 echo "Creating new task for event at ".$event->summary." at ".$dtstart->format("Y\-m\-d H:i:s")."\n";
                 if (!$dryrun) {
-//                    $res = $ninja->tasks->create($taskdata);
+                    $res = $ninja->tasks->create($taskdata);
                 } else {
                     var_dump($taskdata);
                 }
