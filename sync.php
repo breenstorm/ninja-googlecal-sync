@@ -111,53 +111,67 @@ if (sizeof($events)>0) {
         $dtend = $ical->iCalDateToDateTime($event->dtend);
         $guid = $event->uid;
         echo $dtstart->format("Y\-m\-d H:i:s")." - ".$dtend->format("Y\-m\-d H:i:s")." ".$event->summary." GUID:".$guid."\n";
-        $found = false;
-        foreach ($tasks["data"] as $task) {
-            if ($task["custom_value1"] == $refprefix.$guid) {
-                $found = true;
+
+        //find matching client
+        $client_bestscore = 0;
+        $client_bestmatch = null;
+        $description = explode($customer_separator,$event->summary);
+        $desc = explode("/",$description[0]);
+        foreach ($clients["data"] as $client) {
+            if ($client["archived_at"]==null) {
+                $thisscore = 0;
+                similar_text($desc[0],$client["name"],$thisscore);
+                if ($thisscore>$client_bestscore) {
+                    $client_bestscore = $thisscore;
+                    $client_bestmatch = $client;
+                }
             }
         }
-        if (!$found) {
-            echo "No matching task found. Creating task for event ".$event->summary." at ".$dtstart->format("Y\-m\-d H:i:s")."\n";
-            //find matching client
-            $client_bestscore = 0;
-            $client_bestmatch = null;
-            $description = explode($customer_separator,$event->summary);
-            $desc = explode("/",$description[0]);
-            foreach ($clients["data"] as $client) {
-                if ($client["archived_at"]==null) {
+
+        //find matching project
+        $project_bestscore = 0;
+        $project_bestmatch = null;
+        if (isset($desc[1])) {
+            foreach ($projects["data"] as $project) {
+                if ($project["client_id"]==$client_bestmatch["id"]) {
                     $thisscore = 0;
-                    similar_text($desc[0],$client["name"],$thisscore);
+                    similar_text($desc[1],$project["name"],$thisscore);
                     if ($thisscore>$client_bestscore) {
-                        $client_bestscore = $thisscore;
-                        $client_bestmatch = $client;
+                        $project_bestscore = $thisscore;
+                        $project_bestmatch = $project;
                     }
                 }
             }
-            //find matching project
-            $project_bestscore = 0;
-            $project_bestmatch = null;
-            if (isset($desc[1])) {
-                foreach ($projects["data"] as $project) {
-                    if ($project["client_id"]==$client_bestmatch["id"]) {
-                        $thisscore = 0;
-                        similar_text($desc[1],$project["name"],$thisscore);
-                        if ($thisscore>$client_bestscore) {
-                            $project_bestscore = $thisscore;
-                            $project_bestmatch = $project;
-                        }
-                    }
-                }
+        }
+
+        //find matching task
+        $existingtask = null;
+        foreach ($tasks["data"] as $task) {
+            if ($task["custom_value1"] == $refprefix.$guid) {
+                $existingtask = $task;
             }
-            if ($client_bestmatch!==null) {
+        }
+
+        //this event can be linked to a client. process it.
+        if ($client_bestmatch!==null) {
+            echo "Best matching client is ".$client_bestmatch["name"]."\n";
+            if ($project_bestmatch!==null) {
+                echo "Best matching project is ".$project_bestmatch["name"]."\n";
+            } else {
+                echo "No matching project\n";
+            }
+
+            if (sizeof($description)>1) {
+                array_splice($description,0,1);
+            }
+
+            //is the task new?
+            if ($existingtask===null) {
+                echo "No matching task found for event at ".$event->summary." at ".$dtstart->format("Y\-m\-d H:i:s")."\n";
                 //add task for client
-                $client_id = $client_bestmatch["id"];
                 $taskdata = [];
-                $taskdata["client_id"] = $client_id;
+                $taskdata["client_id"] = $client_bestmatch["id"];
                 $taskdata["custom_value1"] = $refprefix.$guid;
-                if (sizeof($description)>1) {
-                    array_splice($description,0,1);
-                }
                 if ($project_bestmatch!==null) {
                     $taskdata["project_id"] = $project_bestmatch["id"];
                 }
@@ -165,18 +179,41 @@ if (sizeof($events)>0) {
                 $taskdata["status_id"] = "wMvbmOeYAl";
                 $taskdata["time_log"] = json_encode([[$dtstart->getTimestamp(),$dtend->getTimestamp()]]);
 
-                echo "Creating new task for event at ".$event->summary." at ".$dtstart->format("Y\-m\-d H:i:s")."\n";
+                echo "Creating new task\n";
                 if (!$dryrun) {
                     $res = $ninja->tasks->create($taskdata);
                 } else {
-                    var_dump($taskdata);
+                    echo var_export($taskdata,true);
                 }
             } else {
-                echo "No client found for event. Skipping.\n";
+                echo "Task for event ".$event->summary." at ".$dtstart->format("Y\-m\-d H:i:s")." exists.\n";
+                //check if task is invoiced
+                if ($existingtask["invoice_id"]=="") {
+                    //update task
+                    $existingtask["client_id"] = $client_bestmatch["id"];
+                    $existingtask["custom_value1"] = $refprefix.$guid;
+                    if ($project_bestmatch!==null) {
+                        $existingtask["project_id"] = $project_bestmatch["id"];
+                    }
+                    $existingtask["description"] = trim(implode(",",$description));
+                    $existingtask["status_id"] = "wMvbmOeYAl";
+                    $existingtask["time_log"] = json_encode([[$dtstart->getTimestamp(),$dtend->getTimestamp()]]);
+
+                    echo "Updating task\n";
+                    if (!$dryrun) {
+                        $res = $ninja->tasks->update($existingtask["id"],$existingtask);
+                    } else {
+                        echo var_export($existingtask,true);
+                    }
+                } else {
+                    echo "Task is invoiced. Leaving it as is.\n";
+                }
             }
+
         } else {
-            echo "Task for event ".$event->summary." at ".$dtstart->format("Y\-m\-d H:i:s")." already exists. Skipping\n";
+            echo "No client found for event. Skipping.\n";
         }
+
     }
     echo "Done\n";
 } else {
