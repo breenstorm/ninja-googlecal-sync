@@ -136,7 +136,7 @@ if (sizeof($events)>0) {
                 if ($project["client_id"]==$client_bestmatch["id"]) {
                     $thisscore = 0;
                     similar_text($desc[1],$project["name"],$thisscore);
-                    if ($thisscore>$client_bestscore) {
+                    if ($thisscore>$project_bestscore) {
                         $project_bestscore = $thisscore;
                         $project_bestmatch = $project;
                     }
